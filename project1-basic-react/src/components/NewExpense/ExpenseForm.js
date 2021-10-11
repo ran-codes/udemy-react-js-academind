@@ -5,7 +5,16 @@ export default function ExpenseForm (props) {
   const [enteredTitle, setEnteredTitle] = useState('');
   const [enteredAmount, setEnteredAmount] = useState('');
   const [enteredDate, setEnteredDate] = useState('');
+  const [showForm, setShowForm] = useState(true);
 
+  const showFormButtonHandler = (event) => {
+    setShowForm(true);
+  }
+
+ const cancleFormButtonHandler = (event) => {
+   setShowForm(false);
+  };
+  
   const titleChangeHandler = (event) => {
     setEnteredTitle(event.target.value);
    }
@@ -34,8 +43,8 @@ export default function ExpenseForm (props) {
     setEnteredDate('');
   }
 
-  return (
-    <form onSubmit={submitHandler}>
+  var form = (
+    <form>
       <div className="new-expense__controls">
         <div className="new-expense__control">
           <label>Title</label>
@@ -65,10 +74,30 @@ export default function ExpenseForm (props) {
             onChange={DateChangeHandler}
           />
         </div>
-        <div className="new-expense__actions">
-          <button type="submit">Add Expense</button>
-        </div>
+      </div>
+      <div className="new-expense__actions ">
+        <span className="new-expense__actions ">
+          <button type="submit" onClick={submitHandler}>
+            Add Expense
+          </button>
+        </span>
+        <span className="new-expense__actions">
+          <button type="submit" onClick={cancleFormButtonHandler}>
+            Cancel
+          </button>
+        </span>
       </div>
     </form>
   );
+  if (showForm === false) {
+    form = (
+        <div className="">
+          <button type="submit" onClick={showFormButtonHandler}>
+            Add New Expense
+          </button>
+        </div>
+    );
+   }
+
+  return form;
 }
