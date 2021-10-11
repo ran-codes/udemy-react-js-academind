@@ -41,6 +41,7 @@ export default function ExpenseForm (props) {
     setEnteredTitle('');
     setEnteredAmount('');
     setEnteredDate('');
+    setShowForm(false);
   }
 
   var form = (
