@@ -9,25 +9,34 @@ const ExpenseList = (props) => {
 
   const filterChangeHandler = (year) => {
     setExpenseYear(year);
-    console.log(year);
   };
 
-  return (
-    <Card className="expenses">
-      <ExpensesFilter onFilterChange={filterChangeHandler} defaultYear={expenseYear} />
-      {props.items.map(function (expenseItem) {
-        return (
-          <ExpenseItem
-            key={expenseItem.id}
-            title={expenseItem.title}
-            amount={expenseItem.amount}
-            date={expenseItem.date}
-          />
-        );
-        }
-      )}
-    </Card>
-  );
+  const filteredExpenses = props.items.filter(expense => {
+   return expense.date.getFullYear().toString() === expenseYear;
+  })
+  
+  let expensesContent =   <h1>No ExpenseItem</h1>
+  if (filteredExpenses.length !== 0) {
+    expensesContent = filteredExpenses.map(function (expenseItem) {
+      return (
+        <ExpenseItem
+          key={expenseItem.id}
+          title={expenseItem.title}
+          amount={expenseItem.amount}
+          date={expenseItem.date}
+        />
+      );
+    });
+  }
+    return (
+      <Card className="expenses">
+        <ExpensesFilter
+          onFilterChange={filterChangeHandler}
+          defaultYear={expenseYear}
+        />
+        {expensesContent}
+      </Card>
+    );
 };
 
 export default ExpenseList;
