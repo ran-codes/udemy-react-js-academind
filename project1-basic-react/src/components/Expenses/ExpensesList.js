@@ -3,18 +3,20 @@ import "./ExpensesList.css"
 
 export default function ExpensesList(props) {
   if (props.items.length === 0) {
-    return <h1>No ExpenseItem</h1>;
+    return <div className="expenses-list__fallback">Found No Expenses.</div>;
   }
-  if (props.items.length !== 0) {
-    return props.items.map(function (expenseItem) {
-      return (
+ 
+  return (
+    <ul className="expenses-list">
+      {props.items.map((expenseItem) => (
         <ExpenseItem
           key={expenseItem.id}
           title={expenseItem.title}
           amount={expenseItem.amount}
           date={expenseItem.date}
         />
-      );
-    });
-  }
+      ))}
+    </ul>
+  )
+
 }
