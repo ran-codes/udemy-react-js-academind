@@ -1,8 +1,8 @@
-import ExpenseList from './components/Expenses/ExpenseList';
+import { useState } from 'react';
+import ExpenseList from './components/Expenses/Expenses';
 import ExpenseForm from './components/NewExpense/NewExpense';
 
-const App = () => {
-  const expenses = [
+  const dummyExpenses = [
     {
       id: 'e1',
       title: 'Toilet Paper',
@@ -24,15 +24,18 @@ const App = () => {
     },
   ];
 
+const App = () => {
+  const [expenses, setExpenses] = useState(dummyExpenses);
+
   const addExpenseHandler = expense => {
-    console.log(expense);
+    setExpenses((prevExpenses) => [expense, ...prevExpenses] );
   };
   
   return (
     <div>
       <h2>Let's get started!</h2>
       <ExpenseForm onAddExpenseHandler={addExpenseHandler} />
-      <ExpenseList data={expenses} />
+      <ExpenseList items={expenses} />
     </div>
   );
 }
