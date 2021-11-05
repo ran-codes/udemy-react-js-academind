@@ -4,7 +4,8 @@ import classes from './MeetupDetail.module.css';
 
 
 function MeetupDetail(props) {
-
+  console.log('***MeetupDetail****');
+  console.log(props);
 
   return (
     <Fragment>
