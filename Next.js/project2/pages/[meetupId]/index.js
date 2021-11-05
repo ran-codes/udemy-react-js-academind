@@ -1,55 +1,73 @@
+import { MongoClient, ObjectId } from 'mongodb';
+
 import { Fragment } from 'react';
 
 import MeetupDetail from '../../components/meetups/MeetupDetail';
- 
+
 function MeetupDetails(props) {
   console.log(MeetupDetails);
   console.log(props);
   return (
     <Fragment>
       <MeetupDetail
-        id={props.id}
-        img={props.image}
-        title={props.title}
-        address={props.address}
+        id={props.meetupData.id}
+        img={props.meetupData.image}
+        title={props.meetupData.title}
+        address={props.meetupData.address}
       />
     </Fragment>
   );
 }
 
 export async function getStaticPaths() {
+  // fetch data from API
+  const client = await MongoClient.connect(
+    'mongodb+srv://ranli2011:mangobub12@cluster0.lucol.mongodb.net/meetups?retryWrites=true&w=majority'
+  );
+
+  const db = client.db();
+
+  const meetupsCollections = db.collection('meetups');
+
+  const meetups = await meetupsCollections.find({},{_id:1}).toArray();
+
+  client.close();
+
   return {
     fallback: false,
-    paths: [
-      {
-        params: {
-          meetupId: 'm1',
-        },
-      },
-      {
-        params: {
-          meetupId: 'm2',
-        },
-      },
-    ],
+    paths: meetups.map(meetup => ({ params: {meetupId: meetup._id.toString()}})),
   };
 }
 
 export async function getStaticProps(context) {
-  
+
   const meetupId = context.params.meetupId;
 
+  // fetch data from API
+  const client = await MongoClient.connect( 'mongodb+srv://ranli2011:mangobub12@cluster0.lucol.mongodb.net/meetups?retryWrites=true&w=majority');
+  const db = client.db();
+  const meetupsCollections = db.collection('meetups');
 
+  const selectedMeetup = await meetupsCollections.findOne({
+    _id: ObjectId(meetupId),
+  });
+  console.log("**************selectedMeetup");
+  console.log(meetupId);
+  console.log(selectedMeetup);
+
+  client.close();
+  
   return {
     props: {
-      id: meetupId,
-      title: 'first meetup',
-      image:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/320px-Stadtbild_M%C3%BCnchen.jpg',
-      address: '342432 Some road, city, country',
-      description: 'A graty thing',
+      meetupData: {
+        id: selectedMeetup._id.toString(),
+        title: selectedMeetup.title,
+        address: selectedMeetup.address,
+        image: selectedMeetup.image,
+        description: selectedMeetup.description
+      },
     },
   };
-} 
+}
 
 export default MeetupDetails;
