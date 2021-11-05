@@ -23,7 +23,9 @@ function NewMeetupForm(props) {
       address: enteredAddress,
       description: enteredDescription,
     };
-
+    
+    console.log("NewMeetupForm Handler: " + JSON.stringify(meetupData));
+    console.log(meetupData);
     props.onAddMeetup(meetupData);
   }
 

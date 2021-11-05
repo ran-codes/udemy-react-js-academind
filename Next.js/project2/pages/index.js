@@ -1,9 +1,8 @@
-
+import { MongoClient } from 'mongodb';
 
 import MeetupList from '../components/meetups/MeetupList';
 
 import { Fragment } from 'react';
- 
 
 function HomePage(props) {
   return (
@@ -13,30 +12,37 @@ function HomePage(props) {
   );
 }
 
-
 export async function getStaticProps(context) {
   // fetch data from API
+  const client = await MongoClient.connect(
+      'mongodb+srv://ranli2011:mangobub12@cluster0.lucol.mongodb.net/meetups?retryWrites=true&w=majority'
+  );
+  
+  const db = client.db();
+
+  const meetupsCollections = db.collection('meetups');
+  
+  const meetups = await meetupsCollections.find().toArray();
+
+  client.close()
+
+  // console.log(meetups);
+
+  const meetups_cleaned = meetups.map(meetup => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString()
+  }))
+  
+  // console.log(meetups_cleaned) 
+
+  // Return props
   return {
     props: {
-      meetups: [
-        {
-          id: 'm1',
-          title: 'first meetup',
-          image:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/320px-Stadtbild_M%C3%BCnchen.jpg',
-          address: '342432 Some road, city, country',
-          description: 'fdsf',
-        },
-        {
-          id: 'm2',
-          title: 'sec meetup',
-          image:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/320px-Stadtbild_M%C3%BCnchen.jpg',
-          address: '342432 Some road, city, country',
-          description: 'fdsf'
-        },
-      ],
+      meetups: meetups_cleaned,
     },
+    revalidate: 1,
   };
 }
 
